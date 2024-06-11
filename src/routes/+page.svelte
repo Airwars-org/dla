@@ -20,7 +20,7 @@
     };
 
     onMount(async () => {
-        const response = await fetch("/data.json");
+        const response = await fetch("data.json");
         data = await response.json();
         updateFilteredData();
     });
@@ -68,18 +68,20 @@
     }
 </script>
 
-<div>
+<div class="header">
     <Header />
-    <Filters
-        {data}
-        {selectedItemName}
-        {selectedAgencyName}
-        {startYear}
-        {endYear}
-        {startValue}
-        {endValue}
-        onFilterChange={handleFilterChange}
-    />
+    <div class="filters">
+        <Filters
+            {data}
+            {selectedItemName}
+            {selectedAgencyName}
+            {startYear}
+            {endYear}
+            {startValue}
+            {endValue}
+            onFilterChange={handleFilterChange}
+        />
+    </div>
 </div>
 
 {#if filteredData.length > 0}
@@ -105,12 +107,18 @@
     div {
         width: 100%;
         max-width: 400px;
-        height: 100vh;
         background: rgb(246, 246, 246);
         position: sticky;
         top: 0;
     }
-    
+
+    .header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
     .viz {
         width: 100%;
         max-width: calc(100vw - 410px);

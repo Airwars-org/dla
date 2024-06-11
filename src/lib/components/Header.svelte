@@ -1,17 +1,13 @@
 <header>
     <h1>
-        All transfers of US military weapons to local police departments from 1994
-        to 2024.
+        All transfers of US military weapons to local police departments from
+        1994 to 2024.
     </h1>
     <p>
         It includes the item name, quantity, cost, and date of shipment for
         police departments the US.
     </p>
-    <p>
-        This data was directly from the Defense Logistics Agency, a combat
-        support agency of the US Department of Defence. of the US Department of
-        Defence.
-    </p>
+    <p>This data comes from the Defense Logistics Agency.</p>
 </header>
 
 <style>

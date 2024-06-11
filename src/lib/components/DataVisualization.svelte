@@ -48,6 +48,10 @@
         .slice(0, 200);
 </script>
 
+<div class="info">
+    The results are sorted according to the total value of the items.
+</div>
+
 <div class="timeline">
     {#each sortedKeys as key}
         <div class="group">
@@ -129,6 +133,10 @@
 
     p {
         margin: 0;
+    }
+
+    .info {
+        margin: 5px 10px;
     }
 
     .header {
