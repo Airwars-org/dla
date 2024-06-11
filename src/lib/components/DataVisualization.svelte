@@ -37,6 +37,7 @@
         acc[key].agency = d["Agency Name"].toLowerCase();
         acc[key].item = d["Item Name"].toLowerCase();
         acc[key].state = d["State"];
+        acc[key].nsn = d["NSN"];
 
         return acc;
     }, {});
@@ -83,8 +84,14 @@
                     <p class="tiny">
                         ({groupedData[key].dates[dateKey].quantity})
                     </p>
+                </div>
+                <div class="meta">
                     <p class="tiny">
-                        ({groupedData[key].dates[dateKey].acquisitionValue})
+                        Acquisition Value: {groupedData[key].dates[dateKey]
+                            .acquisitionValue}
+                    </p>
+                    <p class="tiny">
+                        NSN: {groupedData[key].nsn}
                     </p>
                 </div>
             {/each}
@@ -112,6 +119,11 @@
         align-items: center;
         gap: 5px;
         margin-left: 15px;
+    }
+
+    .meta {
+        margin-left: 25px;
+        margin-bottom: 10px;
     }
 
     .date {
