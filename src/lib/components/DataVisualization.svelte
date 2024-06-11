@@ -10,6 +10,12 @@
         );
     });
 
+    const parseAcquisitionValue = (value) => {
+        return parseFloat(
+            value.replace("US$", "").replace(/\./g, "").replace(",", "."),
+        );
+    };
+
     $: groupedData = filteredData.reduce((acc, d) => {
         const key = `${d["Agency Name"]}, ${d["Item Name"]}`;
         const date = new Date(d["Ship Date"]).toLocaleDateString();
@@ -22,9 +28,7 @@
                 items: [],
             };
 
-        const acquisitionValue = parseFloat(
-            d["Acquisition Value"].replaceAll("US$", ""),
-        );
+        const acquisitionValue = parseAcquisitionValue(d["Acquisition Value"]);
 
         acc[key].totalValue += acquisitionValue;
         acc[key].dates[date].quantity += parseInt(d["Quantity"]);

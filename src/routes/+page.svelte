@@ -101,6 +101,7 @@
         text-rendering: optimizeLegibility;
         display: flex;
     }
+
     div {
         width: 100%;
         max-width: 400px;
@@ -109,6 +110,7 @@
         position: sticky;
         top: 0;
     }
+    
     .viz {
         width: 100%;
         max-width: calc(100vw - 410px);

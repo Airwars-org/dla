@@ -20,7 +20,13 @@
         margin-bottom: 60px;
     }
 
-    h2
+    h1,
+    p {
+        font-weight: 400;
+        margin: 0;
+        padding: 0 10px;
+        max-width: 400px;
+    }
 
     h1 {
         padding: 10px;
