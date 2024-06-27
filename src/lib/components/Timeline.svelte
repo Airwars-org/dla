@@ -1,0 +1,198 @@
+<script>
+    export let data = [];
+    export let itemName = "";
+    export let agencyName = "";
+    export let sortOption = "value";
+
+    $: filteredData = data.filter((d) => {
+        return (
+            (itemName === "" || d["Item Name"] === itemName) &&
+            (agencyName === "" || d["Agency Name"] === agencyName)
+        );
+    });
+
+    const parseAcquisitionValue = (value) => {
+        return parseFloat(
+            value.replace("US$", "").replace(/\./g, "").replace(",", "."),
+        );
+    };
+
+    $: groupedData = filteredData.reduce((acc, d) => {
+        const key = `${d["Agency Name"]}, ${d["Item Name"]}`;
+        const date = new Date(d["Ship Date"]).toLocaleDateString();
+
+        if (!acc[key]) acc[key] = { totalValue: 0, dates: {} };
+        if (!acc[key].dates[date])
+            acc[key].dates[date] = {
+                date: d["Ship Date"],
+                quantity: 0,
+                items: [],
+            };
+
+        const acquisitionValue = parseAcquisitionValue(d["Acquisition Value"]);
+
+        acc[key].totalValue += acquisitionValue;
+        acc[key].dates[date].quantity += parseInt(d["Quantity"]);
+        acc[key].dates[date].acquisitionValue = d["Acquisition Value"];
+        acc[key].dates[date].items.push(d);
+        acc[key].agency = d["Agency Name"].toLowerCase();
+        acc[key].item = d["Item Name"].toLowerCase();
+        acc[key].state = d["State"];
+        acc[key].nsn = d["NSN"];
+
+        return acc;
+    }, {});
+
+    $: sortedKeys = Object.keys(groupedData)
+        .sort((a, b) => {
+            if (sortOption === "value") {
+                return groupedData[b].totalValue - groupedData[a].totalValue;
+            } else if (sortOption === "alphabet") {
+                return a.localeCompare(b);
+            } else if (sortOption === "date") {
+                const dateA = new Date(
+                    groupedData[a].dates[
+                        Object.keys(groupedData[a].dates)[0]
+                    ].date,
+                );
+                const dateB = new Date(
+                    groupedData[b].dates[
+                        Object.keys(groupedData[b].dates)[0]
+                    ].date,
+                );
+                return dateA - dateB;
+            }
+        })
+        .slice(0, 500);
+
+    function handleSortChange(event) {
+        sortOption = event.target.value;
+    }
+</script>
+
+<div class="info">
+    <label for="sortOptions">Sort by: </label>
+    <select id="sortOptions" on:change={handleSortChange}>
+        <option value="value">Value</option>
+        <option value="alphabet">Alphabet</option>
+        <option value="date">Date</option>
+    </select>
+</div>
+
+<div class="timeline">
+    {#each sortedKeys as key}
+        <div class="group">
+            <span class="tiny">
+                (Total Value: ${groupedData[key].totalValue})
+            </span>
+            <div class="header">
+                <h3 class="agency">
+                    {groupedData[key].agency}
+                    <span class="tiny">({groupedData[key].state})</span>
+                </h3>
+                <h3>
+                    {groupedData[key].item}
+                </h3>
+            </div>
+            {#each Object.keys(groupedData[key].dates) as dateKey}
+                <div class="item">
+                    <div class="date">
+                        {new Date(
+                            groupedData[key].dates[dateKey].date,
+                        ).toLocaleDateString()}
+                    </div>
+                    <div
+                        class="bar"
+                        title={`Quantity: ${groupedData[key].dates[dateKey].quantity}`}
+                        style="width: {groupedData[key].dates[dateKey]
+                            .quantity * 10}px"
+                    ></div>
+                    <p class="tiny">
+                        ({groupedData[key].dates[dateKey].quantity})
+                    </p>
+                </div>
+                <div class="meta">
+                    <p class="tiny">
+                        Acquisition Value: {groupedData[key].dates[dateKey]
+                            .acquisitionValue}
+                    </p>
+                    <p class="tiny">
+                        NSN: {groupedData[key].nsn}
+                    </p>
+                </div>
+            {/each}
+        </div>
+    {/each}
+</div>
+
+<style>
+    .timeline {
+        display: flex;
+        flex-direction: column;
+        min-width: 800px;
+    }
+
+    .group {
+        position: sticky;
+        top: 0;
+        background-color: white;
+        box-shadow: inset 0px 5px 5px -5px blue;
+        padding: 20px;
+    }
+
+    .item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-left: 15px;
+    }
+
+    .meta {
+        margin-left: 25px;
+        margin-bottom: 10px;
+        margin-top: 5px;
+    }
+
+    .date {
+        white-space: nowrap;
+        width: 80px;
+        color: gray;
+    }
+
+    .bar {
+        height: 10px;
+        background-color: blue;
+        max-width: 600px;
+    }
+
+    .tiny {
+        font-size: 12px;
+        color: rgb(118, 118, 118);
+    }
+
+    p {
+        margin: 0;
+    }
+
+    .info {
+        margin: 5px 10px;
+    }
+
+    .header {
+        margin-bottom: 10px;
+    }
+
+    h3 {
+        text-transform: capitalize;
+        font-weight: 400;
+        margin: 0;
+    }
+
+    .agency {
+        color: rgb(118, 118, 118);
+    }
+
+    h3:nth-of-type(2) {
+        margin-left: 10px;
+    }
+</style>

@@ -150,19 +150,19 @@
 <style>
     .double-range-container {
         width: 100%;
-        height: 15px;
+        height: 10px;
         user-select: none;
         box-sizing: border-box;
         white-space: nowrap;
         cursor: grab;
-        margin: 20px;
+        margin-bottom: 5px;
     }
 
     .slider {
         position: relative;
         width: 100%;
-        max-width: 280px;
-        height: 15px;
+        /* max-width: 310px; */
+        height: 5px;
         top: 50%; /* align to buttons */
         transform: translate(0, -50%);
         background-color: #f5f5f5;

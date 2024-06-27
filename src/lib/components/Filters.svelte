@@ -2,6 +2,7 @@
     import SearchableDropdown from "$lib/components/SearchableDropdown.svelte";
     import YearRangeFilter from "$lib/components/YearRangeFilter.svelte";
     import DoubleRangeSlider from "$lib/components/DoubleRangeSlider.svelte";
+    import Header from "./Header.svelte";
 
     export let data = [];
     export let selectedItemName = "";
@@ -28,22 +29,9 @@
         );
     };
 
-    // Update the filter options based on the selected filters and text inputs
-    $: {
-        // const years = data.map((d) => new Date(d["Ship Date"]).getFullYear());
-        // const values = data.map((d) =>
-        //     parseAcquisitionValue(d["Acquisition Value"]),
-        // );
-        // minYear = Math.min(...years);
-        // maxYear = Math.max(...years);
-        // minValue = Math.min(...values);
-        // maxValue = Math.max(...values);
-        // if (startYear === undefined) startYear = minYear;
-        // if (endYear === undefined) endYear = maxYear;
-        // if (startValue === undefined) startValue = minValue;
-        // if (endValue === undefined) endValue = maxValue;
-    }
-    $: {
+    filterData();
+
+    function filterData() {
         let filteredData = data;
 
         if (startYear || endYear) {
@@ -84,10 +72,6 @@
         itemNames = [...new Set(filteredData.map((d) => d["Item Name"]))];
         agencyNames = [...new Set(filteredData.map((d) => d["Agency Name"]))];
 
-        handleFilterChange();
-    }
-
-    function handleFilterChange() {
         onFilterChange(
             selectedItemName,
             selectedAgencyName,
@@ -103,55 +87,62 @@
         selectedAgencyName = "";
         startYear = 1990;
         endYear = new Date().getFullYear();
-
         startValue = 10;
         endValue = 4400000;
-        handleFilterChange();
+        filterData();
     }
 </script>
 
-<div>
-    <h2>Filter the dataset</h2>
-    <YearRangeFilter bind:startYear bind:endYear {minYear} {maxYear} />
-    <DoubleRangeSlider bind:startValue bind:endValue {minValue} {maxValue} />
+<div class="filterContainer">
+    <section>
+        <Header />
+        <!-- <DoubleRangeSlider bind:startValue bind:endValue {minValue} {maxValue} /> -->
+    </section>
+    <section>
+        <YearRangeFilter bind:startYear bind:endYear {minYear} {maxYear} />
+        <SearchableDropdown
+            options={agencyNames}
+            placeholder="Type to filter Agency Names..."
+            bind:selected={selectedAgencyName}
+            on:select={filterData}
+        />
 
-    <SearchableDropdown
-        options={agencyNames}
-        placeholder="Type to filter Agency Names..."
-        bind:selected={selectedAgencyName}
-        on:select={handleFilterChange}
-        on:input={() => handleFilterChange()}
-    />
-
-    <SearchableDropdown
-        options={itemNames}
-        placeholder="Type to filter Item Names..."
-        bind:selected={selectedItemName}
-        on:select={handleFilterChange}
-        on:input={() => handleFilterChange()}
-    />
-
-    <div class="reset">
-        <button on:click={resetFilters}>Reset Filters</button>
-    </div>
+        <SearchableDropdown
+            options={itemNames}
+            placeholder="Type to filter Item Names..."
+            bind:selected={selectedItemName}
+            on:select={filterData}
+        />
+    </section>
+    <section>
+        <div class="actions">
+            <button on:click={filterData}>Apply Filters</button>
+            <button on:click={resetFilters}>Reset Filters</button>
+        </div>
+    </section>
 </div>
 
 <style>
-    div {
-        background: rgb(246, 246, 246);
+    .filterContainer {
+        display: flex;
+        gap: 40px;
         padding: 10px;
+        align-items: flex-end;
     }
 
-    .reset {
+    section {
+        max-width: 400px;
+        /* flex: 1; */
+    }
+
+    .actions {
         display: flex;
-        flex-direction: row-reverse;
+        justify-content: flex-end;
+        gap: 5px;
+        margin-top: 20px;
     }
 
     button {
-        margin-top: 30px;
-        padding: 1px 4px;
-        background-color: gray;
-        color: white;
         border: none;
         border-radius: 3px;
         cursor: pointer;

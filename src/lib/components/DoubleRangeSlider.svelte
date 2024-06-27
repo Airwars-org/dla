@@ -155,7 +155,7 @@
         box-sizing: border-box;
         white-space: nowrap;
         cursor: grab;
-        margin: 20px;
+        margin: 5px;
     }
 
     .slider {

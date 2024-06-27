@@ -41,7 +41,7 @@
         on:input={handleInput}
     />
     <div class="dropdown-content">
-        <div on:click={handleSelectAll}>All</div>
+        <!-- <div on:click={handleSelectAll}>All</div> -->
         {#each filteredOptions as option}
             <div on:click={() => handleSelect(option)}>
                 {option}

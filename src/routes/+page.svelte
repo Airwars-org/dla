@@ -1,8 +1,8 @@
 <script>
     import { onMount } from "svelte";
-    import DataVisualization from "$lib/components/DataVisualization.svelte";
+    import Map from "$lib/components/Map.svelte";
     import Filters from "$lib/components/Filters.svelte";
-    import Header from "$lib/components/Header.svelte";
+    import Timeline from "$lib/components/Timeline.svelte";
 
     let data = [];
     let selectedItemName = "";
@@ -68,9 +68,8 @@
     }
 </script>
 
-<div class="header">
-    <Header />
-    <div class="filters">
+{#if filteredData.length > 0}
+    <section class="filters">
         <Filters
             {data}
             {selectedItemName}
@@ -81,52 +80,64 @@
             {endValue}
             onFilterChange={handleFilterChange}
         />
-    </div>
-</div>
-
-{#if filteredData.length > 0}
-    <div class="viz">
-        <DataVisualization
-            data={filteredData}
-            itemName={selectedItemName}
-            agencyName={selectedAgencyName}
-        />
-    </div>
+    </section>
+    <section class="vizContainer">
+        <div class="map">
+            <Map
+                data={filteredData}
+                itemName={selectedItemName}
+                agencyName={selectedAgencyName}
+            />
+        </div>
+        <div class="timeline">
+            <Timeline
+                data={filteredData}
+                itemName={selectedItemName}
+                agencyName={selectedAgencyName}
+            />
+        </div>
+    </section>
 {:else}
-    <p>...</p>
+    <p>Loading...</p>
 {/if}
 
 <style>
-    :global(body) {
-        margin: 0;
-        font-family: sans-serif;
-        text-rendering: optimizeLegibility;
-        display: flex;
-    }
-
-    div {
+    .vizContainer {
         width: 100%;
-        max-width: 400px;
-        background: rgb(246, 246, 246);
-        position: sticky;
-        top: 0;
-    }
-
-    .header {
-        /* height: 100vh;
+        height: 100vh;
         display: flex;
-        flex-direction: column;
-        justify-content: space-between; */
+        flex-wrap: wrap;
     }
 
-    .viz {
-        width: 100%;
-        max-width: calc(100vw - 410px);
+    .filters {
+        display: flex;
+        background-color: #d0d0d0;
+        /* min-height: 120px; */
+        /* max-width: 400px; */
+    }
+
+    .timeline {
+        flex: 2;
+        height: 100vh;
         overflow: scroll;
         background: white;
     }
 
+    .map {
+        flex: 3;
+        overflow: hidden;
+    }
+
     p {
         margin: 10px;
+    }
+
+    @media screen and (max-width: 1024px) {
+        .header {
+            max-width: 100%;
+        }
+        .vizContainer {
+            display: block;
+        }
     }
 </style>
