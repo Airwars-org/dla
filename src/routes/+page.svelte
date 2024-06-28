@@ -69,33 +69,35 @@
 </script>
 
 {#if filteredData.length > 0}
-    <section class="filters">
-        <Filters
-            {data}
-            {selectedItemName}
-            {selectedAgencyName}
-            {startYear}
-            {endYear}
-            {startValue}
-            {endValue}
-            onFilterChange={handleFilterChange}
-        />
-    </section>
     <section class="vizContainer">
-        <div class="map">
-            <Map
-                data={filteredData}
-                itemName={selectedItemName}
-                agencyName={selectedAgencyName}
-            />
+        <div>
+            <section class="filters">
+                <Filters
+                    {data}
+                    {selectedItemName}
+                    {selectedAgencyName}
+                    {startYear}
+                    {endYear}
+                    {startValue}
+                    {endValue}
+                    onFilterChange={handleFilterChange}
+                />
+            </section>
+            <section class="map">
+                <Map
+                    data={filteredData}
+                    itemName={selectedItemName}
+                    agencyName={selectedAgencyName}
+                />
+            </section>
         </div>
-        <div class="timeline">
+        <section class="timeline">
             <Timeline
                 data={filteredData}
                 itemName={selectedItemName}
                 agencyName={selectedAgencyName}
             />
-        </div>
+        </section>
     </section>
 {:else}
     <p>Loading...</p>
@@ -107,6 +109,10 @@
         height: 100vh;
         display: flex;
         flex-wrap: wrap;
+    }
+
+    div {
+        background-color: gainsboro;
     }
 
     .filters {
@@ -126,6 +132,7 @@
     .map {
         flex: 3;
         overflow: hidden;
+        align-items: center;
     }
 
     p {
