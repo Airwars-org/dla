@@ -68,7 +68,7 @@
     }
 </script>
 
-{#if filteredData.length > 0}
+{#if data.length > 0}
     <section class="vizContainer">
         <div>
             <section class="filters">

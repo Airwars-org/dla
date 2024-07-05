@@ -13,6 +13,8 @@
     let container;
     let width;
     let height;
+    let tooltipVisible = false;
+    let tooltipText = "";
 
     onMount(async () => {
         const us = await fetch("us.json").then((d) => d.json());
@@ -43,11 +45,20 @@
 
     function getRadius(count) {
         const minRadius = 3;
-        const maxRadius = 30;
+        const maxRadius = 20;
         const scale = scaleSqrt()
             .domain([1, Math.max(...clusteredPoints.map((p) => p.count))])
             .range([minRadius, maxRadius]);
         return scale(count);
+    }
+
+    function showTooltip(event, agencyName, state) {
+        tooltipText = `${agencyName}, ${state} `;
+        tooltipVisible = true;
+    }
+
+    function hideTooltip() {
+        tooltipVisible = false;
     }
 </script>
 
@@ -60,13 +71,27 @@
         </g>
 
         <g class="points">
-            {#each clusteredPoints as { cx, cy, count }}
+            {#each clusteredPoints as { cx, cy, count, "Agency Name": agencyName, State }}
                 {#if cx && cy}
-                    <circle {cx} {cy} r={getRadius(count)} class="point" />
+                    <circle
+                        {cx}
+                        {cy}
+                        r={getRadius(count)}
+                        class="point"
+                        on:mouseover={(event) =>
+                            showTooltip(event, agencyName, State)}
+                        on:mouseout={hideTooltip}
+                    />
                 {/if}
             {/each}
         </g>
     </svg>
+
+    {#if tooltipVisible}
+        <div class="tooltip" style="top: {10}px; left: {10}px;">
+            {tooltipText}
+        </div>
+    {/if}
 </article>
 
 <style>
@@ -83,5 +108,13 @@
     .point {
         fill: blue;
         stroke: black;
+    }
+
+    .tooltip {
+        position: absolute;
+        background-color: white;
+        border: 1px solid black;
+        padding: 5px;
+        pointer-events: none;
     }
 </style>

@@ -69,8 +69,8 @@
             );
         }
 
-        itemNames = [...new Set(filteredData.map((d) => d["Item Name"]))];
-        agencyNames = [...new Set(filteredData.map((d) => d["Agency Name"]))];
+        itemNames = [...new Set(data.map((d) => d["Item Name"]))];
+        agencyNames = [...new Set(data.map((d) => d["Agency Name"]))];
 
         onFilterChange(
             selectedItemName,
